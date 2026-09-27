@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#080d13">
+  <meta name="description" content="NEON RUSH is an original neon arcade platformer. Run, jump, collect and survive.">
+  <title>NEON RUSH</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="arcade" id="arcade">
+  <div class="stage" id="stage">
+    <canvas id="game-canvas" aria-label="NEON RUSH game. Tap, click or press Space to jump."></canvas>
+
+    <header class="game-hud" id="game-hud" hidden>
+      <div class="hud-level">
+        <span class="eyebrow">NOW RUNNING</span>
+        <strong id="hud-level-name">NEON START</strong>
+        <span class="hud-skin"><i class="skin-chip" id="hud-skin-chip"></i><span id="skin-value">CORE</span></span>
+      </div>
+      <div class="hud-progress">
+        <div class="progress-copy"><span>RUN PROGRESS</span><strong id="progress-label">0%</strong></div>
+        <div class="progress-track"><span id="progress-fill"></span></div>
+      </div>
+      <div class="hud-coins"><i class="coin-glyph"></i><span id="coin-count">0 / 10</span></div>
+      <button class="icon-button" type="button" data-action="pause" aria-label="Pause game" title="Pause (Esc)"><span class="pause-icon"></span></button>
+    </header>
+
+    <div class="run-stats" id="run-stats" hidden>
+      <span>SCORE <strong id="score-value">0</strong></span>
+      <span>BEST <strong id="best-value">0</strong></span>
+      <span>SPEED <strong id="speed-value">1.0x</strong></span>
+      <span>SHELL <strong id="shell-value">CORE</strong></span>
+    </div>
+
+    <div class="fps-readout" id="fps-readout" hidden>60 FPS</div>
+    <button class="touch-jump" id="touch-jump" type="button" aria-label="Jump">JUMP <span>&#8599;</span></button>
+
+    <!-- ---------- menu ---------- -->
+    <section class="screen home-screen" data-screen="MENU" aria-labelledby="game-title">
+      <div class="screen-topline">
+        <a class="wordmark" href="#menu" data-action="menu"><i class="wordmark-mark"></i>NR<span>.</span></a>
+        <div class="topline-actions">
+          <span class="build-label"><i></i> ARCADE SERIES / 01</span>
+          <button class="icon-button" type="button" data-action="toggle-sfx" aria-label="Toggle sound effects" title="Sound effects"><i class="sound-icon"></i></button>
+        </div>
+      </div>
+
+      <div class="home-layout">
+        <div class="home-copy">
+          <p class="kicker"><i></i> AN ORIGINAL ARCADE RUNNER</p>
+          <h1 id="game-title">NEON<br><span>RUSH</span><b>.</b></h1>
+          <p class="tagline">RUN <i>&bull;</i> JUMP <i>&bull;</i> SURVIVE</p>
+          <p class="home-description">Six routes, one line, endless signal. Read the rhythm, find your line, and don't let the signal catch you.</p>
+          <div class="profile-strip">
+            <div class="profile-chip"><span>CUBE SKIN</span><strong id="menu-skin">CORE</strong></div>
+            <div class="profile-chip"><span>COINS BANKED</span><strong id="menu-coins">0</strong></div>
+            <div class="profile-chip"><span>ROUTES CLEARED</span><strong id="menu-routes">0 / 6</strong></div>
+          </div>
+          <div class="home-actions">
+            <button class="button button-primary" data-action="play">PLAY NOW <span>&#8599;</span></button>
+            <button class="button button-quiet" data-action="levels">LEVEL SELECT</button>
+          </div>
+          <nav class="text-nav">
+            <button data-action="skins">SKINS <span>&#8599;</span></button>
+            <button data-action="how">HOW TO PLAY <span>&#8599;</span></button>
+            <button data-action="settings">SETTINGS <span>&#8599;</span></button>
+          </nav>
+        </div>
+
+        <div class="hero-art" aria-hidden="true">
+          <div class="hero-orbit orbit-one"></div>
+          <div class="hero-orbit orbit-two"></div>
+          <div class="hero-axis axis-x"></div>
+          <div class="hero-axis axis-y"></div>
+          <div class="hero-cube"><span></span></div>
+          <small class="coordinate coordinate-one">45&deg; 08' 12" N</small>
+          <small class="coordinate coordinate-two">SIGNAL / 001</small>
+          <i class="pip pip-one"></i>
+          <i class="pip pip-two"></i>
+          <i class="pip pip-three"></i>
+          <div class="hero-caption"><span>FIG. 01</span><span>THE RUNNER</span></div>
+        </div>
+      </div>
+
+      <footer class="home-footer">
+        <span>SIX ROUTES. THREE WORLDS. ONE WAY FORWARD.</span>
+        <span class="footer-best">PERSONAL BEST <strong id="menu-best">000000</strong></span>
+        <span class="footer-credit">CREATED BY <strong>WINSLIET RIEGN ANGCRE</strong> &middot; BSIT 3102</span>
+      </footer>
+    </section>
+
+    <!-- ---------- level select ---------- -->
+    <section class="screen content-screen" data-screen="LEVEL_SELECT" aria-labelledby="levels-title" hidden>
+      <div class="screen-topline">
+        <button class="wordmark" data-action="menu" aria-label="Back to menu"><i class="wordmark-mark"></i>NR<span>.</span></button>
+        <span class="section-index">01 / ROUTE MAP</span>
+        <button class="icon-button back-button" data-action="menu" aria-label="Back">&larr;</button>
+      </div>
+      <div class="section-heading">
+        <p class="kicker"><i></i> CHOOSE YOUR ROUTE</p>
+        <h2 id="levels-title">SELECT <span>LEVEL</span></h2>
+        <p>Each run reveals the next. Your best line is saved on this device.</p>
+      </div>
+      <div class="level-grid" id="level-grid"></div>
+      <div class="section-foot"><span><i class="status-dot"></i> LOCAL SAVE ACTIVE</span><span>6 ROUTES / 1 SIGNAL</span></div>
+    </section>
+
+    <!-- ---------- skins ---------- -->
+    <section class="screen content-screen" data-screen="SKINS" aria-labelledby="skins-title" hidden>
+      <div class="screen-topline">
+        <button class="wordmark" data-action="back" aria-label="Back"><i class="wordmark-mark"></i>NR<span>.</span></button>
+        <span class="section-index">02 / CUBE LAB</span>
+        <button class="icon-button back-button" data-action="back" aria-label="Back">&larr;</button>
+      </div>
+      <div class="section-heading">
+        <p class="kicker"><i></i> EQUIP YOUR CUBE</p>
+        <h2 id="skins-title">CUBE <span>SKINS</span></h2>
+        <p>Unlock new shells by banking coins and clearing routes.</p>
+      </div>
+      <div class="skin-equipped">
+        <i class="skin-chip" id="skin-current-chip"></i>
+        <div><span>EQUIPPED</span><strong id="skin-current-name">CORE</strong></div>
+        <small>SELECT A SKIN BELOW</small>
+      </div>
+      <div class="skin-grid" id="skin-grid"></div>
+      <div class="section-foot"><span><i class="status-dot"></i> SKIN SAVED AUTOMATICALLY</span><span>8 SHELLS AVAILABLE</span></div>
+    </section>
+
+    <!-- ---------- how to play ---------- -->
+    <section class="screen content-screen" data-screen="HOW_TO_PLAY" aria-labelledby="how-title" hidden>
+      <div class="screen-topline">
+        <button class="wordmark" data-action="menu" aria-label="Back to menu"><i class="wordmark-mark"></i>NR<span>.</span></button>
+        <span class="section-index">03 / FIELD NOTES</span>
+        <button class="icon-button back-button" data-action="menu" aria-label="Back">&larr;</button>
+      </div>
+      <div class="section-heading">
+        <p class="kicker"><i></i> READ THE COURSE</p>
+        <h2 id="how-title">HOW TO <span>PLAY</span></h2>
+        <p>Keep your eyes forward. The rest is timing.</p>
+      </div>
+
+      <div class="instruction-layout">
+        <div class="instruction-main">
+          <b>01</b>
+          <div>
+            <h3>Find your rhythm.</h3>
+            <p>Your runner never stops. Jump before the edge, stay light in the air, and land ready for what comes next.</p>
+          </div>
+        </div>
+        <div class="instruction-list">
+          <div><kbd>SPACE</kbd><kbd>W</kbd><kbd>&uarr;</kbd><p>Jump / double jump</p></div>
+          <div><kbd class="wide">CLICK / TAP</kbd><p>Jump anywhere in the game</p></div>
+          <div><kbd>R</kbd><p>Restart your run</p></div>
+          <div><kbd>ESC</kbd><kbd>P</kbd><p>Pause the game</p></div>
+        </div>
+        <div class="field-tip">
+          <b>+</b>
+          <p><strong>Look for the signal.</strong> Coins reward risky lines. Shields absorb a hit. Portals bend the rules for a little while. None are required to finish.</p>
+        </div>
+      </div>
+
+      <div class="legend">
+        <span class="legend-title">ROUTE ELEMENTS</span>
+        <div class="legend-grid">
+          <div><i class="lg lg-spike"></i><b>Spikes</b><p>Jump or die</p></div>
+          <div><i class="lg lg-saw"></i><b>Saw blade</b><p>Timed jump</p></div>
+          <div><i class="lg lg-laser"></i><b>Laser</b><p>Waits for gaps</p></div>
+          <div><i class="lg lg-orb"></i><b>Orb</b><p>Free boost</p></div>
+          <div><i class="lg lg-pad"></i><b>Pad</b><p>Big launch</p></div>
+          <div><i class="lg lg-rotor"></i><b>Rotor</b><p>Stay low</p></div>
+          <div><i class="lg lg-coin"></i><b>Coin</b><p>Score + skins</p></div>
+          <div><i class="lg lg-power"></i><b>Power</b><p>Temporary gift</p></div>
+        </div>
+      </div>
+
+      <div class="screen-bottom-action">
+        <button class="button button-primary" data-action="play">GOT IT <span>&#8599;</span></button>
+        <small>KEYBOARD, MOUSE &amp; TOUCH</small>
+      </div>
+    </section>
+
+    <!-- ---------- settings ---------- -->
+    <section class="screen content-screen settings-screen" data-screen="SETTINGS" aria-labelledby="settings-title" hidden>
+      <div class="screen-topline">
+        <button class="wordmark" data-action="back" aria-label="Back"><i class="wordmark-mark"></i>NR<span>.</span></button>
+        <span class="section-index">04 / SYSTEM TUNING</span>
+        <button class="icon-button back-button" data-action="back" aria-label="Back">&larr;</button>
+      </div>
+      <div class="section-heading">
+        <p class="kicker"><i></i> MAKE IT YOURS</p>
+        <h2 id="settings-title">SYSTEM <span>SETTINGS</span></h2>
+        <p>Preferences are saved on this device.</p>
+      </div>
+
+      <div class="settings-list">
+        <div class="setting-row skin-row">
+          <div><strong>Cube skin</strong><span>Change your shell</span></div>
+          <button class="setting-action" data-action="skins">OPEN CUBE LAB <span>&#8599;</span><strong id="settings-skin-name">CORE</strong></button>
+        </div>
+        <div class="setting-row">
+          <div><strong>Procedural music</strong><span>An original ambient pulse</span></div>
+          <button class="setting-toggle" data-setting="music" aria-label="Music" aria-pressed="true"><i></i></button>
+        </div>
+        <div class="setting-row">
+          <div><strong>Sound effects</strong><span>Jumps, pickups and impacts</span></div>
+          <button class="setting-toggle" data-setting="sfx" aria-label="Sound effects" aria-pressed="true"><i></i></button>
+        </div>
+        <div class="setting-row">
+          <div><strong>Particles</strong><span>Trails and impact effects</span></div>
+          <button class="setting-toggle" data-setting="particles" aria-label="Particles" aria-pressed="true"><i></i></button>
+        </div>
+        <div class="setting-row">
+          <div><strong>Screen shake</strong><span>Subtle impact feedback</span></div>
+          <button class="setting-toggle" data-setting="shake" aria-label="Screen shake" aria-pressed="true"><i></i></button>
+        </div>
+        <div class="setting-row">
+          <div><strong>FPS counter</strong><span>Performance readout</span></div>
+          <button class="setting-toggle" data-setting="fps" aria-label="FPS counter" aria-pressed="false"><i></i></button>
+        </div>
+        <div class="setting-row difficulty-row">
+          <div><strong>Run difficulty</strong><span>Adjust pace and jump timing</span></div>
+          <div class="segmented" role="group" aria-label="Run difficulty">
+            <button data-difficulty="easy">EASY</button>
+            <button data-difficulty="normal">NORMAL</button>
+            <button data-difficulty="hard">HARD</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-foot">
+        <span><i class="status-dot"></i> SETTINGS AUTO-SAVE</span>
+        <span>NEON RUSH / 1.0 &middot; BY WINSLIET RIEGN ANGCRE &middot; BSIT 3102</span>
+      </div>
+    </section>
+
+    <!-- ---------- pause ---------- -->
+    <section class="screen modal-screen" data-screen="PAUSED" aria-labelledby="pause-title" hidden>
+      <div class="modal-panel">
+        <p class="kicker"><i></i> TAKE A BREATHER</p>
+        <h2 id="pause-title">RUN <span>PAUSED</span></h2>
+        <p class="modal-copy">The signal can wait.</p>
+        <div class="modal-actions">
+          <button class="button button-primary" data-action="resume">RESUME <span>&#8599;</span></button>
+          <button class="button button-quiet" data-action="restart">RESTART RUN</button>
+          <button class="button button-quiet" data-action="settings">SETTINGS</button>
+          <button class="text-action" data-action="menu">RETURN TO MENU <span>&#8599;</span></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- crash ---------- -->
+    <section class="screen modal-screen" data-screen="DEAD" aria-labelledby="dead-title" hidden>
+      <div class="modal-panel result-panel">
+        <i class="result-gem"></i>
+        <p class="kicker"><i></i> SIGNAL LOST</p>
+        <h2 id="dead-title">YOU <span>CRASHED!</span></h2>
+        <p class="modal-copy">Every miss maps the way forward.</p>
+        <div class="result-stats">
+          <div><span>RUN SCORE</span><strong id="dead-score">0</strong></div>
+          <div><span>COINS</span><strong id="dead-coins">0 / 10</strong></div>
+          <div><span>BEST SCORE</span><strong id="dead-best">0</strong></div>
+        </div>
+        <div class="modal-actions">
+          <button class="button button-primary" data-action="restart">RETRY <span>&#8599;</span></button>
+          <button class="button button-quiet" data-action="menu">MAIN MENU</button>
+        </div>
+        <small class="keyboard-hint">PRESS <b>R</b> TO RETRY</small>
+      </div>
+    </section>
+
+    <!-- ---------- level complete ---------- -->
+    <section class="screen modal-screen" data-screen="LEVEL_COMPLETE" aria-labelledby="complete-title" hidden>
+      <div class="modal-panel result-panel">
+        <i class="result-gem success"></i>
+        <p class="kicker"><i></i> SIGNAL RESTORED</p>
+        <h2 id="complete-title">LEVEL <span>COMPLETE!</span></h2>
+        <p class="modal-copy" id="complete-level-name">A clean run.</p>
+        <div class="result-stats five">
+          <div><span>RUN SCORE</span><strong id="complete-score">0</strong></div>
+          <div><span>COINS</span><strong id="complete-coins">0 / 10</strong></div>
+          <div><span>COMPLETE</span><strong id="complete-progress">100%</strong></div>
+          <div><span>TIME</span><strong id="complete-time">0:00</strong></div>
+          <div><span>BEST SCORE</span><strong id="complete-best">0</strong></div>
+        </div>
+        <div class="modal-actions">
+          <button class="button button-primary" data-action="next">NEXT LEVEL <span>&#8599;</span></button>
+          <button class="button button-quiet" data-action="restart">RUN AGAIN</button>
+          <button class="text-action" data-action="menu">MAIN MENU <span>&#8599;</span></button>
+        </div>
+      </div>
+    </section>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </div>
+</main>
+<script src="script.js" defer></script>
+</body>
+</html>
